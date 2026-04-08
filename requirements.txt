@@ -1,0 +1,7 @@
+django>=4.2
+djangorestframework>=3.14
+psycopg2-binary>=2.9
+gunicorn>=21.0
+twilio
+python-dotenv
+djangorestframework-simplejwt>=5.5.1

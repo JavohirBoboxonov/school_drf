@@ -59,6 +59,7 @@ class NotificationDetailView(generics.RetrieveDestroyAPIView):
 
 class NotificationMarkReadView(APIView):
 
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):

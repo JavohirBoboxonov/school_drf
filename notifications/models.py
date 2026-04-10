@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+
 class Notification(models.Model):
     TYPES = [('lesson_added','Lesson'),('test_started','Test'),
              ('payment_reminder','Payment'),('announcement','Announcement')]

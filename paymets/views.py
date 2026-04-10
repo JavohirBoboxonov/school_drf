@@ -17,12 +17,9 @@ class PaymentListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = Payment.objects.select_related('enrollment__student', 'enrollment__group')
-
-        # O'quvchi faqat o'z to'lovlarini ko'ra oladi
         if user.role == 'student':
             qs = qs.filter(enrollment__student=user)
         else:
-            # Admin yoki O'qituvchilar barcha ma'lumotlarni filterlashi mumkin
             student_id = self.request.query_params.get('student')
             enrollment_id = self.request.query_params.get('enrollment')
             
@@ -38,7 +35,6 @@ class PaymentListCreateView(generics.ListCreateAPIView):
         return qs.order_by('-paid_at')
 
     def perform_create(self, serializer):
-        # Yaratilgan vaqtda to'lov holati asosan pending bo'ladi (webhooklarga qarab kelajakda success qilinadi)
         serializer.save(status='pending')
 
 
@@ -55,7 +51,6 @@ class PaymentDetailView(generics.RetrieveDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         payment = self.get_object()
-        # To'lov ayni success holatida bo'lsa uni o'chirishga faqat admin vakolatli deb olish mumkin
         if payment.status == 'success' and request.user.role != 'admin':
             return Response(
                 {"detail": "Muvaffaqiyatli to'lovni o'chirish faqat adminlarga ruxsat beriladi."},
@@ -78,13 +73,8 @@ class PaymentStatusUpdateView(APIView):
         serializer.is_valid(raise_exception=True)
         
         updated_payment = serializer.save()
-        
-        # Qo'shimcha imkoniyat: Agarda to'lov muvaffaqiyatli deb topilsa ('success'),
-        # Enrollment ning amount_paid qismiga avtomat mazkur to'lov narxini qo'shib yozish lozim:
         if updated_payment.status == 'success':
             enrollment = updated_payment.enrollment
-            # faqat 1 marta hisoblash uchun bu biznes mantiqlar webhook paytida qilingani ma'qul,
-            # Lekin buni signal yoki model yordamida handle qilsa to'g'riroq.
             pass
 
         return Response({"status": updated_payment.status, "detail": "To'lov holati yangilandi"}, status=status.HTTP_200_OK)

@@ -5,3 +5,5 @@ gunicorn>=21.0
 twilio
 python-dotenv
 djangorestframework-simplejwt>=5.5.1
+redis>=5.0.0
+django-redis>=5.4.0

@@ -21,14 +21,12 @@ class HomeworkListCreateView(generics.ListCreateAPIView):
         qs = Homework.objects.select_related('student', 'lesson', 'checked_by')
         user = self.request.user
 
-        # O'quvchi faqat o'z vazifalarini ko'radi
+
         if user.role == 'student':
             qs = qs.filter(student=user)
-        # O'qituvchi / assistant faqat o'zlari tekshirishi kerak bo'lgan guruhlarni ko'rishini filter qilish mumkin
-        # Hozircha query params orqali limitlanadi
-        elif user.role in ('teacher', 'assistant'):
-            pass # Qanday qilsa ham bo'ladi, masalan qs.filter(lesson__group__teacher=user)
 
+        elif user.role in ('teacher', 'assistant'):
+            pass
         lesson_id = self.request.query_params.get('lesson')
         student_id = self.request.query_params.get('student')
         status_f = self.request.query_params.get('status')
@@ -62,7 +60,7 @@ class HomeworkDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         homework = self.get_object()
-        # O'quvchi tekshirilgan vazifani o'chira olmasligi kerak
+
         if request.user.role == 'student' and homework.status == 'checked':
             return Response(
                 {"detail": "Tekshirilgan vazifani o'chirish mumkin emas."},
@@ -72,7 +70,7 @@ class HomeworkDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class HomeworkCheckView(APIView):
-    """PATCH /homework/<pk>/check/ — O'qituvchi yoki Assistant tekshiradi"""
+
     permission_classes = [IsTeacherOrAdminOrAssistant]
 
     def patch(self, request, pk):
@@ -84,10 +82,10 @@ class HomeworkCheckView(APIView):
         serializer = HomeworkCheckSerializer(homework, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         
-        # Yangilamoqda tekshiruvchini o'rnatish
+
         homework_obj = serializer.save(checked_by=request.user)
 
-        # Agar holat `checked` dbda o'z-o'zidan emas, API jo'natganda qilingan bo'lsa
+
         if request.data.get('grade') is not None and not request.data.get('status'):
             homework_obj.status = 'checked'
             homework_obj.save(update_fields=['status'])

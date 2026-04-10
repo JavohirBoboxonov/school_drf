@@ -1,6 +1,6 @@
 from django.db import models
-from apps.accounts.models import User
-from apps.courses.models import Group
+from users.models import User
+from cources.models import Group
 
 class Exam(models.Model):
     TYPES = [('weekly','Haftalik'),('monthly','Oylik'),('final','Final')]

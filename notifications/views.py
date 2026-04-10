@@ -17,6 +17,7 @@ class NotificationListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = Notification.objects.select_related('user')
+        
 
         if user.role != 'admin':
             qs = qs.filter(user=user)
@@ -37,13 +38,14 @@ class NotificationListCreateView(generics.ListCreateAPIView):
         return qs.order_by('-created_at')
 
     def get_permissions(self):
+
         if self.request.method == 'POST':
             return [IsAdmin()]
         return super().get_permissions()
 
 
 class NotificationDetailView(generics.RetrieveDestroyAPIView):
-    """Notificationni o'qish va uni o'chirish"""
+
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
 
@@ -56,6 +58,8 @@ class NotificationDetailView(generics.RetrieveDestroyAPIView):
 
 
 class NotificationMarkReadView(APIView):
+
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -73,6 +77,7 @@ class NotificationMarkReadView(APIView):
 
 
 class NotificationMarkAllReadView(APIView):
+
     permission_classes = [IsAuthenticated]
     
     def post(self, request):

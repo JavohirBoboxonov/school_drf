@@ -1,10 +1,8 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.exceptions import PermissionDenied
-
 from .models import Exam, ExamResult
 from .serializers import ExamSerializer, ExamResultSerializer
-
 
 class IsTeacherOrAdmin(IsAuthenticated):
     def has_permission(self, request, view):

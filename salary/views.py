@@ -15,7 +15,6 @@ class SalaryListCreateView(generics.ListCreateAPIView):
     serializer_class = SalarySerializer
 
     def get_permissions(self):
-        # Maoshlarni faqat admin qo'sha oladi (yoki cronjob avtomatik kiritadi)
         if self.request.method == 'POST':
             return [IsAdmin()]
         return [IsAuthenticated()]
@@ -25,13 +24,11 @@ class SalaryListCreateView(generics.ListCreateAPIView):
         qs = Salary.objects.select_related('user')
 
         if user.role != 'admin':
-            # Har qanday oddiy xodim faqat o'z maoshini ko'ra oladi
             qs = qs.filter(user=user)
         else:
-            # Admin filtrlashi mumkin
             employee_id = self.request.query_params.get('user')
             is_paid = self.request.query_params.get('is_paid')
-            month = self.request.query_params.get('month') # formato YYYY-MM-DD
+            month = self.request.query_params.get('month')
             
             if employee_id:
                 qs = qs.filter(user_id=employee_id)
@@ -39,7 +36,6 @@ class SalaryListCreateView(generics.ListCreateAPIView):
                 is_paid_bool = str(is_paid).lower() in ['true', '1', 'yes']
                 qs = qs.filter(is_paid=is_paid_bool)
             if month:
-                # Masalan faqat yili va oyi bo'yicha filter kerak bo'lsa month__startswith qilinadi
                 qs = qs.filter(month=month)
 
         return qs.order_by('-month')

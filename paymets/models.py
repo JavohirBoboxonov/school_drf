@@ -1,5 +1,5 @@
 from django.db import models
-from apps.courses.models import Enrollment
+from cources.models import Enrollment
 
 class Payment(models.Model):
     STATUS = [('pending','Pending'),('success','Success'),('failed','Failed')]

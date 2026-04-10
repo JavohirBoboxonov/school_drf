@@ -5,9 +5,6 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from .models import User, OTPCode
 
-
-# ── LOGIN ──────────────────────────────────────────────────────────────────────
-
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
@@ -24,9 +21,6 @@ class LoginSerializer(serializers.Serializer):
         attrs["user"] = user
         return attrs
 
-
-# ── PASSWORD RESET ─────────────────────────────────────────────────────────────
-
 class PasswordResetRequestSerializer(serializers.Serializer):
     """1-qadam: emailga OTP yuborish."""
     email = serializers.EmailField()
@@ -39,7 +33,6 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     def save(self):
         email = self.validated_data["email"]
 
-        # Avvalgi ishlatilmagan kodlarni bekor qilish
         OTPCode.objects.filter(
             email=email, purpose="reset", is_used=False
         ).update(is_used=True)
@@ -50,13 +43,12 @@ class PasswordResetRequestSerializer(serializers.Serializer):
         send_mail(
             subject="Parolni tiklash kodi",
             message=f"Sizning tasdiqlash kodingiz: {code}\nKod 10 daqiqa davomida amal qiladi.",
-            from_email=None,   # settings.DEFAULT_FROM_EMAIL ishlatiladi
+            from_email=None,
             recipient_list=[email],
         )
 
 
 class PasswordResetVerifySerializer(serializers.Serializer):
-    """2-qadam: OTP kodni tekshirish."""
     email      = serializers.EmailField()
     code       = serializers.CharField(max_length=6)
 
@@ -69,8 +61,6 @@ class PasswordResetVerifySerializer(serializers.Serializer):
             ).latest("created_at")
         except OTPCode.DoesNotExist:
             raise serializers.ValidationError("Faol kod topilmadi.")
-
-        # Urinishlar soni
         otp.attempts += 1
         otp.save(update_fields=["attempts"])
 
@@ -86,7 +76,6 @@ class PasswordResetVerifySerializer(serializers.Serializer):
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
-    """3-qadam: yangi parol o'rnatish."""
     email        = serializers.EmailField()
     code         = serializers.CharField(max_length=6)
     new_password = serializers.CharField(min_length=8, write_only=True)
@@ -96,7 +85,6 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         if attrs["new_password"] != attrs["confirm_password"]:
             raise serializers.ValidationError("Parollar mos kelmadi.")
 
-        # OTP qayta tekshiriladi
         verify = PasswordResetVerifySerializer(data={
             "email": attrs["email"],
             "code":  attrs["code"],

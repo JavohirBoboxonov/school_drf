@@ -17,9 +17,7 @@ class NotificationListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = Notification.objects.select_related('user')
-        
-        # User faqat o'ziga kelgan bildirishnomalarni ko'ra oladi
-        # Lekin admin barchasini ko'rishi mumkin (filter qilingan paytda)
+
         if user.role != 'admin':
             qs = qs.filter(user=user)
         else:
@@ -39,8 +37,6 @@ class NotificationListCreateView(generics.ListCreateAPIView):
         return qs.order_by('-created_at')
 
     def get_permissions(self):
-        # Oddiy foydalanuvchi faqat notifications ni o'qiy oladi, qo'sha olmaydi
-        # Yangi bildirishnoma yaratish faqat tizimga yoki Adminga tegishli deb olamiz
         if self.request.method == 'POST':
             return [IsAdmin()]
         return super().get_permissions()
@@ -60,7 +56,6 @@ class NotificationDetailView(generics.RetrieveDestroyAPIView):
 
 
 class NotificationMarkReadView(APIView):
-    """PATCH /notifications/<pk>/read/ -> Bildirishnomani o'qilgan deb belgilash"""
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, pk):
@@ -78,7 +73,6 @@ class NotificationMarkReadView(APIView):
 
 
 class NotificationMarkAllReadView(APIView):
-    """POST /notifications/read-all/ -> Barcha o'qilmagan xabarlarni o'qilgan qilish"""
     permission_classes = [IsAuthenticated]
     
     def post(self, request):

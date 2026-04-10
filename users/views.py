@@ -20,4 +20,4 @@ class PasswordResetConfirmView(APIView):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": "Parol muvaffaqiyatli o'zgartirildi."})
+        return Response({"detail": "Parol muvaffaqiyatli o'zgartirildi."})      

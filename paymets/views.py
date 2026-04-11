@@ -60,7 +60,6 @@ class PaymentDetailView(generics.RetrieveDestroyAPIView):
 
 
 class PaymentStatusUpdateView(APIView):
-    """PATCH /payments/<pk>/status/ -> To'lov holatini yangilash (Faqat tizim / Admin)"""
     permission_classes = [IsAdmin]
 
     def patch(self, request, pk):
@@ -77,4 +76,7 @@ class PaymentStatusUpdateView(APIView):
             enrollment = updated_payment.enrollment
             pass
 
-        return Response({"status": updated_payment.status, "detail": "To'lov holati yangilandi"}, status=status.HTTP_200_OK)
+        return Response({
+            "status": updated_payment.status, 
+            "paymet_detail": "To'lov holati yangilandi"
+            }, status=status.HTTP_200_OK)

@@ -53,14 +53,12 @@ class SalaryDetailView(generics.RetrieveUpdateDestroyAPIView):
         return qs
 
     def get_permissions(self):
-        # Oddiy foydalanuvchi faqat o'zinikini ko'radi, tahrirlash/o'chirish faqat admin
         if self.request.method in ('PUT', 'PATCH', 'DELETE'):
             return [IsAdmin()]
         return [IsAuthenticated()]
 
 
 class SalaryPayView(APIView):
-    """PATCH /salary/<pk>/pay/ -> Maoshni to'langan qilib belgilash"""
     permission_classes = [IsAdmin]
 
     def patch(self, request, pk):
@@ -72,7 +70,6 @@ class SalaryPayView(APIView):
         if salary.is_paid:
              return Response({"detail": "Maosh allaqachon to'langan."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # To'langan qilib belgilash va paid_at ni Hozirgi kunga set qilish
         salary.is_paid = request.data.get('is_paid', True)
         if salary.is_paid:
             salary.paid_at = timezone.now()

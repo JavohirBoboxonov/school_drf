@@ -13,7 +13,6 @@ class UserShortSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip() or obj.username
 
-
 class SalarySerializer(serializers.ModelSerializer):
     user_info = UserShortSerializer(source='user', read_only=True)
 
@@ -30,7 +29,6 @@ class SalarySerializer(serializers.ModelSerializer):
         }
 
 class SalaryPaymentSerializer(serializers.ModelSerializer):
-    """Maoshni to'langanini belgilash uchun"""
     class Meta:
         model = Salary
         fields = ['is_paid']

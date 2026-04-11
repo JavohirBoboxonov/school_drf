@@ -21,7 +21,6 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 class PasswordResetRequestSerializer(serializers.Serializer):
-    """1-qadam: emailga OTP yuborish."""
     email = serializers.EmailField()
 
     def validate_email(self, value):

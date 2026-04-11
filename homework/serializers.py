@@ -29,7 +29,7 @@ class HomeworkSerializer(serializers.ModelSerializer):
             'student': {'write_only': True},
             'checked_by': {'write_only': True},
             'submitted_at': {'read_only': True},
-            # Grade, feedback, etc. should ideally not be set directly by student
+
             'grade': {'read_only': True},
             'feedback': {'read_only': True},
             'status': {'read_only': True},
@@ -42,19 +42,17 @@ class HomeworkSerializer(serializers.ModelSerializer):
 
 
 class HomeworkCheckSerializer(serializers.ModelSerializer):
-    """O'qituvchi yoki admin tomonidan vazifani tekshirish uchun serializer"""
+
     class Meta:
         model = Homework
         fields = ['grade', 'feedback', 'status']
 
     def validate(self, attrs):
         status = attrs.get('status')
-        # Agar baho qo'yilsa va status hali ham topshirilgan bo'lsa, uni avtomat checked qilish mumkin (bu view'da ham qilinishi mumkin yoxud shu yerda shart qilib qo'yish mumkin).
-        # Hozircha oddiy tekshiruv:
+
         valid_statuses = ('submitted', 'checked', 'returned')
         if status and status not in valid_statuses:
             raise serializers.ValidationError({"status": f"Ruxsat etilgan statuslar: {valid_statuses}"})
         
-        # Max score tekshiruvi agar lesson yoki shundan obuna bo'lgan tizimda grade chegarasi bo'lsa
-        # Hozirda grade limit mavjud emas, shart emas
+
         return attrs

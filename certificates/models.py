@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
-from apps.accounts.models import User
-from apps.courses.models import Course
+from users.models import User
+from cources.models import Course
 
 class Certificate(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)

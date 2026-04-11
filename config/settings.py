@@ -27,9 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +39,15 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'users',
     'attendance',
+    'complaints',
+    'cources',
+    'exams',
+    'homework',
+    'notifications',
+    'paymets',
+    'salary',
+    'certificates',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -141,4 +147,5 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }

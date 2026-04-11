@@ -27,7 +27,6 @@ class NotificationSerializer(serializers.ModelSerializer):
         }
 
 class NotificationReadSerializer(serializers.ModelSerializer):
-    """Faqat is_read ni yangilash uchun"""
     class Meta:
         model = Notification
         fields = ['is_read']

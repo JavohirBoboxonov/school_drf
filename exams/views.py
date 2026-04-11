@@ -20,7 +20,7 @@ class ExamListCreateView(generics.ListCreateAPIView):
         qs = Exam.objects.select_related('group', 'created_by')
         user = self.request.user
         
-        # Student faqat o'zi a'zo bo'lgan guruh (tasdiqlangan) imtihonlarini ko'ra oladi
+
         if user.role == 'student':
             qs = qs.filter(group__enrollments__student=user, group__enrollments__status='approved')
         

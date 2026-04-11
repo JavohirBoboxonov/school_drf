@@ -17,7 +17,7 @@ class NotificationListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = Notification.objects.select_related('user')
-        
+
 
         if user.role != 'admin':
             qs = qs.filter(user=user)

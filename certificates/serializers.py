@@ -4,7 +4,6 @@ from users.models import User
 
 
 class UserShortSerializer(serializers.ModelSerializer):
-    """Student uchun qisqa ma'lumot"""
     full_name = serializers.SerializerMethodField()
 
     class Meta:

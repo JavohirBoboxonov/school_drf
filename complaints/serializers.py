@@ -31,7 +31,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'student': {'write_only': True},
             'created_at': {'read_only': True},
-            'status': {'read_only': True},   # status faqat admin tomonidan o'zgartiriladi
+            'status': {'read_only': True},
         }
 
     def validate_student(self, user):
@@ -43,7 +43,6 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
 
 class ComplaintStatusSerializer(serializers.ModelSerializer):
-    """Faqat admin uchun — statusni o'zgartirish"""
     class Meta:
         model = Complaint
         fields = ['status']

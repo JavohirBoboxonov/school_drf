@@ -4,7 +4,6 @@ from users.models import User
 
 
 class UserShortSerializer(serializers.ModelSerializer):
-    """Student va marked_by uchun qisqa ma'lumot"""
     full_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -40,13 +39,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
         student = attrs.get('student')
         marked_by = attrs.get('marked_by')
 
-        # Faqat teacher yoki assistant davomat belgilashi mumkin
         if marked_by and marked_by.role not in ('teacher', 'assistant', 'admin'):
             raise serializers.ValidationError(
                 {"marked_by": "Faqat o'qituvchi yoki assistant davomat belgilashi mumkin."}
             )
 
-        # Student rolini tekshirish
         if student and student.role != 'student':
             raise serializers.ValidationError(
                 {"student": "Faqat student uchun davomat belgilanishi mumkin."}
@@ -56,7 +53,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class AttendanceBulkSerializer(serializers.Serializer):
-    """Bir guruh uchun bir kunda ko'plab davomatni birdan yaratish"""
     group = serializers.IntegerField()
     date = serializers.DateField()
     records = serializers.ListField(

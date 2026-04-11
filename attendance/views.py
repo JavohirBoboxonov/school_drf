@@ -9,7 +9,6 @@ from .serializers import AttendanceSerializer, AttendanceBulkSerializer
 
 
 class IsTeacherOrAdmin(IsAuthenticated):
-    """Faqat teacher, assistant yoki admin kirishi mumkin"""
     def has_permission(self, request, view):
         if not super().has_permission(request, view):
             return False
@@ -23,11 +22,9 @@ class AttendanceListCreateView(generics.ListCreateAPIView):
         qs = Attendance.objects.select_related('student', 'group', 'marked_by')
         user = self.request.user
 
-        # Student faqat o'zining davomatini ko'radi
         if user.role == 'student':
             qs = qs.filter(student=user)
 
-        # URL query param filterlari
         group_id = self.request.query_params.get('group')
         date     = self.request.query_params.get('date')
         status_  = self.request.query_params.get('status')
@@ -53,12 +50,6 @@ class AttendanceListCreateView(generics.ListCreateAPIView):
         return [IsAuthenticated()]
 
 
-# ─────────────────────────────────────────────
-#  GET    /attendance/<pk>/  → detail
-#  PUT    /attendance/<pk>/  → to'liq update
-#  PATCH  /attendance/<pk>/  → qisman update
-#  DELETE /attendance/<pk>/  → o'chirish
-# ─────────────────────────────────────────────
 class AttendanceDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AttendanceSerializer
     permission_classes = [IsAuthenticated]
@@ -82,15 +73,15 @@ class AttendanceBulkCreateView(APIView):
         serializer = AttendanceBulkSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        data      = serializer.validated_data
-        group_id  = data['group']
-        date      = data['date']
-        records   = data['records']
+        data = serializer.validated_data
+        group_id = data['group']
+        date = data['date']
+        records = data['records']
         marked_by = request.user
 
         created = []
         updated = []
-        errors  = []
+        errors = []
 
         for record in records:
             student_id = record['student']
@@ -124,7 +115,7 @@ class AttendanceSummaryView(APIView):
 
     def get(self, request):
         group_id = request.query_params.get('group')
-        date     = request.query_params.get('date')
+        date = request.query_params.get('date')
 
         if not group_id or not date:
             return Response(
@@ -135,12 +126,12 @@ class AttendanceSummaryView(APIView):
         qs = Attendance.objects.filter(group_id=group_id, date=date)
 
         summary = {
-            'group':   group_id,
-            'date':    date,
-            'total':   qs.count(),
-            'present': qs.filter(status='present').count(),
-            'absent':  qs.filter(status='absent').count(),
-            'late':    qs.filter(status='late').count(),
+            'group':group_id,
+            'date':date,
+            'total':qs.count(),
+            'present':qs.filter(status='present').count(),
+            'absent':qs.filter(status='absent').count(),
+            'late':qs.filter(status='late').count(),
         }
 
         return Response(summary)

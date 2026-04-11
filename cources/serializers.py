@@ -14,9 +14,6 @@ class UserShortSerializer(serializers.ModelSerializer):
         return f"{obj.first_name} {obj.last_name}".strip() or obj.username
 
 
-# ──────────────────────────────
-#  COURSE
-# ──────────────────────────────
 class CourseSerializer(serializers.ModelSerializer):
     teacher_info = UserShortSerializer(source='teacher', read_only=True)
 
@@ -36,9 +33,6 @@ class CourseSerializer(serializers.ModelSerializer):
         }
 
 
-# ──────────────────────────────
-#  GROUP
-# ──────────────────────────────
 class GroupSerializer(serializers.ModelSerializer):
     teacher_info = UserShortSerializer(source='teacher', read_only=True)
     assistant_info = UserShortSerializer(source='assistant', read_only=True)
@@ -74,9 +68,6 @@ class GroupSerializer(serializers.ModelSerializer):
         return attrs
 
 
-# ──────────────────────────────
-#  ENROLLMENT
-# ──────────────────────────────
 class EnrollmentSerializer(serializers.ModelSerializer):
     student_info = UserShortSerializer(source='student', read_only=True)
     approved_by_info = UserShortSerializer(source='approved_by', read_only=True)
@@ -100,7 +91,6 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 
 
 class EnrollmentStatusSerializer(serializers.ModelSerializer):
-    """Admin uchun — status va approved_by ni yangilash"""
     class Meta:
         model = Enrollment
         fields = ['status', 'approved_by']

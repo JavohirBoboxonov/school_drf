@@ -63,7 +63,6 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class MessageReadSerializer(serializers.ModelSerializer):
-    """Faqat is_read maydonini yangilash uchun"""
     class Meta:
         model = Message
         fields = ['is_read']

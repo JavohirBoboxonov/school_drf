@@ -13,11 +13,10 @@ class MessageListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        msg_type = self.request.query_params.get('type')  # direct | group
+        msg_type = self.request.query_params.get('type')
         group_id = self.request.query_params.get('group')
         receiver_id = self.request.query_params.get('receiver')
 
-        # Foydalanuvchi o'zi yuborganlarni yoki qabul qilganlarni ko'radi
         qs = Message.objects.select_related('sender', 'receiver', 'group').filter(
             Q(sender=user) | Q(receiver=user) | Q(group__students=user) | Q(group__teacher=user)
         ).distinct().order_by('created_at')

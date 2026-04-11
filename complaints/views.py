@@ -8,7 +8,6 @@ from .serializers import ComplaintSerializer, ComplaintStatusSerializer
 
 
 class IsAdmin(IsAuthenticated):
-    """Faqat admin kirishi mumkin"""
     def has_permission(self, request, view):
         if not super().has_permission(request, view):
             return False
@@ -23,11 +22,9 @@ class ComplaintListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         qs = Complaint.objects.select_related('student')
 
-        # Student faqat o'z shikoyatlarini ko'radi
         if user.role == 'student':
             qs = qs.filter(student=user)
 
-        # Filter: status bo'yicha
         status_filter = self.request.query_params.get('status')
         if status_filter:
             qs = qs.filter(status=status_filter)
@@ -66,7 +63,6 @@ class ComplaintDetailView(generics.RetrieveDestroyAPIView):
 
 
 class ComplaintResolveView(APIView):
-    """PATCH /complaints/<pk>/resolve/ — admin shikoyatni yopadi"""
     permission_classes = [IsAdmin]
 
     def patch(self, request, pk):

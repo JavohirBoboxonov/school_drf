@@ -21,9 +21,6 @@ class IsTeacherOrAdmin(IsAuthenticated):
         return super().has_permission(request, view) and request.user.role in ('teacher', 'admin')
 
 
-# ══════════════════════════════════════════════
-#  COURSE
-# ══════════════════════════════════════════════
 class CourseListCreateView(generics.ListCreateAPIView):
     serializer_class = CourseSerializer
 
@@ -56,9 +53,6 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
         return [IsTeacherOrAdmin()]
 
 
-# ══════════════════════════════════════════════
-#  GROUP
-# ══════════════════════════════════════════════
 class GroupListCreateView(generics.ListCreateAPIView):
     serializer_class = GroupSerializer
 
@@ -99,9 +93,6 @@ class GroupDetailView(generics.RetrieveUpdateDestroyAPIView):
         return [IsAdmin()]
 
 
-# ══════════════════════════════════════════════
-#  ENROLLMENT
-# ══════════════════════════════════════════════
 class EnrollmentListCreateView(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
@@ -137,7 +128,6 @@ class EnrollmentDetailView(generics.RetrieveDestroyAPIView):
 
 
 class EnrollmentApproveView(APIView):
-    """PATCH /enrollments/<pk>/approve/  — admin tasdiqlaydi yoki rad etadi"""
     permission_classes = [IsAdmin]
 
     def patch(self, request, pk):
@@ -162,9 +152,6 @@ class EnrollmentApproveView(APIView):
         return Response(EnrollmentSerializer(enrollment).data)
 
 
-# ══════════════════════════════════════════════
-#  LESSON
-# ══════════════════════════════════════════════
 class LessonListCreateView(generics.ListCreateAPIView):
     serializer_class = LessonSerializer
 

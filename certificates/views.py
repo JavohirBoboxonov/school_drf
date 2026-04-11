@@ -9,7 +9,6 @@ from .serializers import CertificateSerializer
 
 
 class IsAdminOrTeacher(IsAuthenticated):
-    """Faqat admin yoki teacher kirishi mumkin"""
     def has_permission(self, request, view):
         if not super().has_permission(request, view):
             return False
